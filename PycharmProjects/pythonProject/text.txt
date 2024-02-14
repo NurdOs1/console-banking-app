@@ -1,0 +1,76 @@
+import unittest
+from unittest.mock import patch
+from io import StringIO
+from main import BankAccount
+
+
+class TestBankAccount(unittest.TestCase):
+    def setUp(self):
+        self.account = BankAccount("John Doe")
+
+    def test_deposit_valid_amount(self):
+        self.account.deposit(500)
+        self.assertEqual(self.account.balance, 500)
+
+    def test_deposit_invalid_amount(self):
+        with patch("builtins.print") as mocked_print:
+            self.account.deposit("abc")
+            mocked_print.assert_called_with("Введите корректную сумму.")
+
+    def test_deposit_over_limit(self):
+        self.account.account_limit = 1000
+        with patch("builtins.print") as mocked_print:
+            self.account.deposit(1500)
+            mocked_print.assert_called_with("Превышен лимит на счету. Операция отменена.")
+
+    def test_withdraw_valid_amount(self):
+        self.account.balance = 1000
+        self.account.withdraw(500)
+        self.assertEqual(self.account.balance, 500)
+
+    def test_withdraw_invalid_amount(self):
+        with patch("builtins.print") as mocked_print:
+            self.account.withdraw("abc")
+            mocked_print.assert_called_with("Введите корректную сумму.")
+
+    def test_withdraw_insufficient_balance(self):
+        with patch("builtins.print") as mocked_print:
+            self.account.withdraw(500)
+            mocked_print.assert_called_with("Недостаточно средств на счету.")
+
+    def test_add_transaction(self):
+        self.account.add_transaction(500, "Test transaction")
+        self.assertEqual(len(self.account.expected_transactions), 1)
+
+    def test_set_account_limit(self):
+        self.account.set_account_limit(2000)
+        self.assertEqual(self.account.account_limit, 2000)
+
+    def test_apply_transactions_valid(self):
+        self.account.balance = 1000
+        self.account.expected_transactions = [{"amount": 500, "comment": "Test transaction"}]
+        self.account.apply_transactions()
+        self.assertEqual(self.account.balance, 1500)
+
+    def test_apply_transactions_invalid(self):
+        self.account.balance = 1000
+        self.account.expected_transactions = [{"amount": 1500, "comment": "Test transaction"}]
+        with patch("builtins.print") as mocked_print:
+            self.account.apply_transactions()
+            mocked_print.assert_called_with("Транзакция 'Test transaction' на сумму 1500.00 USD. не может быть применена (превышен лимит).")
+
+    def test_show_transaction_statistics(self):
+        self.account.expected_transactions = [
+            {"amount": 500, "comment": "Transaction 1"},
+            {"amount": 1000, "comment": "Transaction 2"},
+            {"amount": 500, "comment": "Transaction 3"}
+        ]
+        with patch("builtins.print") as mocked_print:
+            self.account.show_transaction_statistics()
+            mocked_print.assert_called_with(
+                "Статистика по ожидаемым пополнениям:\n500.00 US Dollar: 2 платеж(а)\n1000.00 US Dollar: 1 платеж(а)"
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()
