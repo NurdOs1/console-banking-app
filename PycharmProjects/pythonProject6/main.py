@@ -9,45 +9,33 @@ class BankAccount:
         self.account_limit = float('inf')
 
     def deposit(self, amount):
-        try:
-            amount = float(amount)
-            if amount <= self.account_limit:
-                self.balance += amount
-                print(f"Деньги успешно внесены. Ваш баланс: {self.balance:.2f} US Dollar")
-            else:
-                print("Превышен лимит на счету. Операция отменена.")
-        except ValueError:
-            print("Введите корректную сумму.")
+        amount = float(amount)
+        if amount <= self.account_limit:
+            self.balance += amount
+            print(f"Деньги успешно внесены. Ваш баланс: {self.balance:.2f} US Dollar")
+        else:
+            print("Превышен лимит на счету. Операция отменена.")
 
     def withdraw(self, amount):
-        try:
-            amount = float(amount)
-            if amount <= self.balance:
-                self.balance -= amount
-                print(f"Сумма {amount:.2f} успешно снята. Новый баланс: {self.balance:.2f} US Dollar")
-            else:
-                print("Недостаточно средств на счету.")
-        except ValueError:
-            print("Введите корректную сумму.")
+        amount = float(amount)
+        if amount <= self.balance:
+            self.balance -= amount
+            print(f"Сумма {amount:.2f} успешно снята. Новый баланс: {self.balance:.2f} US Dollar")
+        else:
+            print("Недостаточно средств на счету.")
 
     def display_balance(self):
         print(f"Текущий баланс: {self.balance:.2f} US Dollar")
 
     def add_transaction(self, amount, comment):
-        try:
-            amount = float(amount)
-            self.expected_transactions.append({"amount": amount, "comment": comment})
-            print(f"Транзакция добавлена. Ожидаемое количество пополнений: {len(self.expected_transactions)}")
-        except ValueError:
-            print("Введите корректную сумму для транзакции.")
+        amount = float(amount)
+        self.expected_transactions.append({"amount": amount, "comment": comment})
+        print(f"Транзакция добавлена. Ожидаемое количество пополнений: {len(self.expected_transactions)}")
 
     def set_account_limit(self, limit):
-        try:
-            limit = float(limit)
-            self.account_limit = limit
-            print(f"Лимит на счету успешно установлен: {self.account_limit:.2f} US Dollar")
-        except ValueError:
-            print("Введите корректную сумму для лимита.")
+        limit = float(limit)
+        self.account_limit = limit
+        print(f"Лимит на счету успешно установлен: {self.account_limit:.2f} US Dollar")
 
     def apply_transactions(self):
         applied_transactions = []
