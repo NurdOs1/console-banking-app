@@ -9,33 +9,45 @@ class BankAccount:
         self.account_limit = float('inf')
 
     def deposit(self, amount):
-        amount = float(amount)
-        if amount <= self.account_limit:
-            self.balance += amount
-            print(f"Деньги успешно внесены. Ваш баланс: {self.balance:.2f} US Dollar")
-        else:
-            print("Превышен лимит на счету. Операция отменена.")
+        try:
+            amount = float(amount)
+            if amount <= self.account_limit:
+                self.balance += amount
+                print(f"Деньги успешно внесены. Ваш баланс: {self.balance:.2f} US Dollar")
+            else:
+                print("Превышен лимит на счету. Операция отменена.")
+        except ValueError:
+            print("Введите корректную сумму.")
 
     def withdraw(self, amount):
-        amount = float(amount)
-        if amount <= self.balance:
-            self.balance -= amount
-            print(f"Сумма {amount:.2f} успешно снята. Новый баланс: {self.balance:.2f} US Dollar")
-        else:
-            print("Недостаточно средств на счету.")
+        try:
+            amount = float(amount)
+            if amount <= self.balance:
+                self.balance -= amount
+                print(f"Сумма {amount:.2f} успешно снята. Новый баланс: {self.balance:.2f} US Dollar")
+            else:
+                print("Недостаточно средств на счету.")
+        except ValueError:
+            print("Введите корректную сумму.")
 
     def display_balance(self):
         print(f"Текущий баланс: {self.balance:.2f} US Dollar")
 
     def add_transaction(self, amount, comment):
-        amount = float(amount)
-        self.expected_transactions.append({"amount": amount, "comment": comment})
-        print(f"Транзакция добавлена. Ожидаемое количество пополнений: {len(self.expected_transactions)}")
+        try:
+            amount = float(amount)
+            self.expected_transactions.append({"amount": amount, "comment": comment})
+            print(f"Транзакция добавлена. Ожидаемое количество пополнений: {len(self.expected_transactions)}")
+        except ValueError:
+            print("Введите корректную сумму для транзакции.")
 
     def set_account_limit(self, limit):
-        limit = float(limit)
-        self.account_limit = limit
-        print(f"Лимит на счету успешно установлен: {self.account_limit:.2f} US Dollar")
+        try:
+            limit = float(limit)
+            self.account_limit = limit
+            print(f"Лимит на счету успешно установлен: {self.account_limit:.2f} US Dollar")
+        except ValueError:
+            print("Введите корректную сумму для лимита.")
 
     def apply_transactions(self):
         applied_transactions = []
@@ -80,46 +92,54 @@ class BankAccount:
             print("Файл с данными не найден.")
 
 
-def main():
-    account_holder_name = input("Введите ФИО владельца денег для создания аккаунта: ")
-    account = BankAccount(account_holder_name)
+class BankApplication:
+    def __init__(self):
+        self.account_holder_name = None
+        self.account = None
 
-    while True:
-        print("\nВыберите операцию:")
-        print("1. Положить деньги на счёт")
-        print("2. Снять деньги со счёта")
-        print("3. Вывести баланс на экран")
-        print("4. Добавить ожидаемое пополнение")
-        print("5. Установить лимит на счёт")
-        print("6. Применить ожидаемые пополнения")
-        print("7. Статистика по ожидаемым пополнениям")
-        print("8. Выйти из программы")
+    def create_account(self):
+        self.account_holder_name = input("Введите ФИО владельца денег для создания аккаунта: ")
+        self.account = BankAccount(self.account_holder_name)
 
-        choice = input("Введите номер операции:")
-        if choice == '1':
-            account.deposit(input("Введите сумму для внесения на счёт: "))
-        elif choice == '2':
-            account.withdraw(input("Введите сумму для снятия со счёта: "))
-        elif choice == '3':
-            account.display_balance()
-        elif choice == '4':
-            amount = input("Введите сумму будущего пополнения: ")
-            comment = input("Введите комментарий (назначение пополнения): ")
-            account.add_transaction(amount, comment)
-        elif choice == '5':
-            limit = input("Введите лимит на счету: ")
-            account.set_account_limit(limit)
-        elif choice == '6':
-            account.apply_transactions()
-        elif choice == '7':
-            account.show_transaction_statistics()
-        elif choice == '8':
-            account.save_to_file()
-            print("Выход из программы.")
-            break
-        else:
-            print("Неверный выбор. Пожалуйста, введите корректный номер операции.")
+    def run(self):
+        while True:
+            print("\nВыберите операцию:")
+            print("1. Положить деньги на счёт")
+            print("2. Снять деньги со счёта")
+            print("3. Вывести баланс на экран")
+            print("4. Добавить ожидаемое пополнение")
+            print("5. Установить лимит на счёт")
+            print("6. Применить ожидаемые пополнения")
+            print("7. Статистика по ожидаемым пополнениям")
+            print("8. Выйти из программы")
+
+            choice = input("Введите номер операции:")
+            if choice == '1':
+                self.account.deposit(input("Введите сумму для внесения на счёт: "))
+            elif choice == '2':
+                self.account.withdraw(input("Введите сумму для снятия со счёта: "))
+            elif choice == '3':
+                self.account.display_balance()
+            elif choice == '4':
+                amount = input("Введите сумму будущего пополнения: ")
+                comment = input("Введите комментарий (назначение пополнения): ")
+                self.account.add_transaction(amount, comment)
+            elif choice == '5':
+                limit = input("Введите лимит на счету: ")
+                self.account.set_account_limit(limit)
+            elif choice == '6':
+                self.account.apply_transactions()
+            elif choice == '7':
+                self.account.show_transaction_statistics()
+            elif choice == '8':
+                self.account.save_to_file()
+                print("Выход из программы.")
+                break
+            else:
+                print("Неверный выбор. Пожалуйста, введите корректный номер операции.")
 
 
 if __name__ == "__main__":
-    main()
+    bank_app = BankApplication()
+    bank_app.create_account()
+    bank_app.run()
